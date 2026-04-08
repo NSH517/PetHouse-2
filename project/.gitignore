@@ -1,0 +1,11 @@
+# dependencies
+/node_modules
+/target
+*.class
+*.jar
+*.war
+/.idea
+*.iml
+
+# local secret files
+project/src/main/resources/application-local.properties

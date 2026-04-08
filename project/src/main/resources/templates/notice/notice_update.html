@@ -1,0 +1,151 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="_csrf" th:content="${_csrf.token}">
+        <meta name="_csrf_header" th:content="${_csrf.headerName}">
+        <meta charset="UTF-8">
+        <title>공지사항 수정</title>
+
+        <!-- Bootstrap 5 CDN -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .page-title {
+                font-weight: 600;
+            }
+            textarea {
+                resize: none;
+            }
+        </style>
+    </head>
+    <body>
+
+    <div class="container py-5">
+
+        <!-- 페이지 제목 -->
+        <h3 class="page-title mb-4">공지사항 수정</h3>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+        
+                <form id="noticeupdateform" action="/noticeupdate" method="post">
+
+                    <!-- 제목 -->
+                    <div class="mb-3">
+                        <input type="hidden" name="no" id="no" th:value="${notice.no}">
+                        <label class="form-label fw-semibold">제목</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="title"
+                            th:value="${notice.title}"
+                        >
+                    </div>
+
+                    <!-- 내용 -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">내용</label>
+                        <textarea
+                            id="content"
+                            class="form-control"
+                            rows="10"
+                            th:text="${notice.content}">
+                    
+                    </textarea>
+                    </div>
+        
+                    <!-- 버튼 영역 -->
+                <div class="d-flex justify-content-between">
+                    <!-- 왼쪽 -->
+                    <a href="/noticelist" class="btn btn-outline-secondary">
+                        취소
+                    </a>
+
+                    <!-- 오른쪽 버튼 묶음 -->
+                    <div class="d-flex gap-2">
+                        <button type="button" onclick="actiondelete()" class="btn btn-danger">
+                            삭제하기
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            수정하기
+                        </button>
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const no = document.getElementById("no").value;
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        document.getElementById("noticeupdateform").addEventListener("submit", function(e){
+        e.preventDefault();
+
+        const data = {
+            title : document.getElementById("title").value,
+            content : document.getElementById("content").value
+        }
+        fetch(`/noticeup/${no}`, {
+            method : "POST",
+            headers : {
+                "Content-Type" : "application/json",
+                [csrfHeader] : csrfToken
+            },
+            body: JSON.stringify(data)
+        })
+        .then(function(response){
+            return response.text();
+        })
+        .then(function (result) {
+            if(result === "SUCCESS"){
+                alert("공지사항이 수정되었습니다");
+                window.location.href = "/noticelist";
+            }else{
+                alert("등록 실패 : " + result);
+            }
+        })
+        .catch(function(error){
+            console.error(error);
+            alert("서버 통신 오류");
+        });
+    });
+       function actiondelete() {
+    if (!confirm("공지사항을 삭제하시겠습니까?")) {
+        return;
+    }
+
+    fetch(`/noticedelete/${no}`, {
+        method: "DELETE",
+        headers: {
+            [csrfHeader]: csrfToken
+        }
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === "SUCCESS") {
+            alert("공지사항이 삭제되었습니다.");
+            window.location.href = "/noticelist";
+        } else {
+            alert("삭제 실패");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        alert("서버 오류");
+    });
+}
+
+    </script>
+    </body>
+    </html>
