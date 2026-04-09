@@ -72,12 +72,23 @@ public String success(@RequestParam("pg_token") String pgToken,
 
     // 환불
     @PostMapping("/kakaopay/refund")
-    public String refund(@RequestParam("resNo") Long resNo,
-                         @RequestParam("cancelAmount") int cancelAmount) {
- 
-        kakaoPayService.cancel(resNo, cancelAmount);
-        log.info("환불 완료 - resNo: {}, 금액: {}", resNo, cancelAmount);
- 
-        return "redirect:http://localhost:5173/kakaopay/refund";
+public String refund(@RequestParam("resNo") Long resNo,
+                     @RequestParam("cancelAmount") int cancelAmount) {
+
+    KakaoPayCancelResponse response = kakaoPayService.cancel(resNo, cancelAmount);
+    log.info("환불 완료 - resNo: {}, 금액: {}", resNo, cancelAmount);
+
+    try {
+        String itemName = URLEncoder.encode(response.getItem_name(), StandardCharsets.UTF_8);
+        String canceledAt = URLEncoder.encode(response.getCanceled_at(), StandardCharsets.UTF_8);
+
+        return "redirect:http://localhost:5173/kakaopay/refund"
+             + "?item_name=" + itemName
+             + "&cancel_amount=" + cancelAmount
+             + "&canceled_at=" + canceledAt;
+    } catch (Exception e) {
+        return "redirect:http://localhost:5173/kakaopay/refund"
+             + "?cancel_amount=" + cancelAmount;
     }
+}
 }

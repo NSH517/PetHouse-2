@@ -668,12 +668,25 @@ const ReservationSection = ({ refreshKey }) => {
   }
 
   const handleRefund = (resNo, totalPrice) => {
-    if (!window.confirm('정말 환불하시겠습니까?')) return
-    const form = document.createElement('form')
-    form.method = 'POST'; form.action = 'http://localhost:8080/kakaopay/refund'
-    form.innerHTML = `<input type="hidden" name="resNo" value="${resNo}"><input type="hidden" name="cancelAmount" value="${totalPrice}">`
-    document.body.appendChild(form); form.submit(); document.body.removeChild(form)
-  }
+  if (!window.confirm('정말 환불하시겠습니까?')) return
+
+  const w = 500, h = 650
+  const left = (screen.width - w) / 2, top = (screen.height - h) / 2
+
+  window.open('', 'refundPopup', `width=${w},height=${h},left=${left},top=${top},scrollbars=yes`)
+
+  const form = document.createElement('form')
+  form.method = 'POST'
+  form.action = 'http://localhost:8080/kakaopay/refund'
+  form.target = 'refundPopup'
+  form.innerHTML = `
+    <input type="hidden" name="resNo" value="${resNo}">
+    <input type="hidden" name="cancelAmount" value="${totalPrice}">
+  `
+  document.body.appendChild(form)
+  form.submit()
+  document.body.removeChild(form)
+}
 
   const statusStyle = (status) => {
     if (status === '예약중') return { background: '#dbeafe', color: '#1d4ed8' }

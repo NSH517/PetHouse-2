@@ -192,14 +192,14 @@ const LoginForm = () => {
             </a>
 
 
-            <div style={styles.links}>
+            <div style={styles.links} className='mt-1'>
               <span className="no-count">계정이 없으신가요?</span>
               <a className='text-blue-600 hover:text-blue-800 underline' href="/join">회원가입</a>
             </div>
 
-            <div style={{ textAlign: 'center' }}>
+            {/* <div style={{ textAlign: 'center' }}>
               <a href="/find" className='text-blue-600 hover:text-blue-800 underline'>아이디/비밀번호 찾기</a>
-            </div>
+            </div> */}
           </div>
 
         </form>

@@ -1,6 +1,12 @@
-import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 export default function KakaoPayRefund() {
+  const [params] = useSearchParams()
+
+  const itemName   = params.get('item_name') || '펫 호텔 예약'
+  const total      = params.get('cancel_amount') || '0'
+  const canceledAt = params.get('canceled_at') || '-'
+
   const closeAndReload = () => {
     if (window.opener) {
       window.opener.location.reload()
@@ -33,6 +39,28 @@ export default function KakaoPayRefund() {
         <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '32px' }}>
           환불 처리가 정상적으로 완료되었습니다
         </p>
+
+        {/* 환불 정보 */}
+        <div style={{
+          background: '#f9fafb', borderRadius: '12px', padding: '20px',
+          marginBottom: '28px', textAlign: 'left'
+        }}>
+          {[
+            { label: '상품명',    value: itemName },
+            { label: '환불 금액', value: `${Number(total).toLocaleString()}원` },
+            { label: '환불 시각', value: canceledAt },
+          ].map(({ label, value }) => (
+            <div key={label} style={{
+              display: 'flex', justifyContent: 'space-between',
+              padding: '8px 0', borderBottom: '1px solid #e5e7eb',
+              fontSize: '14px'
+            }}>
+              <span style={{ color: '#6b7280' }}>{label}</span>
+              <span style={{ fontWeight: 600, color: '#111827' }}>{value}</span>
+            </div>
+          ))}
+        </div>
+
         <button onClick={closeAndReload} style={{
           width: '100%', padding: '14px', borderRadius: '10px',
           border: 'none', background: '#ef4444', color: '#fff',

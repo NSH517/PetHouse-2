@@ -1,4 +1,4 @@
--- Active: 1767920835424@@127.0.0.1@3306@aloha
+-- Active: 1772523695263@@127.0.0.1@3306@aloha
 SET FOREIGN_KEY_CHECKS = 0;
 
 drop TABLE IF EXISTS `users`;
